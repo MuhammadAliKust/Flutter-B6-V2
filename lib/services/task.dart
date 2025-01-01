@@ -6,17 +6,19 @@ class TaskServices {
 
   ///Create Task
   Future createTask(TaskModel model) async {
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection(task).doc();
     return await FirebaseFirestore.instance
         .collection(task)
-        .add(model.toJson());
+        .doc(documentReference.id)
+        .set(model.toJson(documentReference.id));
   }
 
   ///Get All Tasks
   Stream<List<TaskModel>> getAllTask() {
     return FirebaseFirestore.instance
         .collection(task)
-
-        .orderBy('createdAt',descending: true)
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .map((taskList) => taskList.docs
             .map((taskModel) => TaskModel.fromJson(taskModel.data()))
@@ -62,10 +64,10 @@ class TaskServices {
   }
 
   ///Mark Task as Complete
-  Future markTaskAsComplete(String taskID) async {
+  Future markTaskAsComplete(String taskID, bool status) async {
     return await FirebaseFirestore.instance
         .collection(task)
         .doc(taskID)
-        .update({'isCompleted': true});
+        .update({'isCompleted': status});
   }
 }

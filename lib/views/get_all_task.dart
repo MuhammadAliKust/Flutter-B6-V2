@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_b6_v2/models/task.dart';
 import 'package:flutter_b6_v2/services/task.dart';
@@ -34,20 +35,36 @@ class GetAllTaskView extends StatelessWidget {
                   leading: Icon(Icons.task),
                   title: Text(taskList[i].title.toString()),
                   subtitle: Text(taskList[i].description.toString()),
-                  trailing: IconButton(
-                      onPressed: () async {
-                        try {
-                          await TaskServices()
-                              .deleteTask(taskList[i].docId.toString());
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(e.toString())));
-                        }
-                      },
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      )),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CupertinoSwitch(
+                          value: taskList[i].isCompleted!,
+                          onChanged: (val) async {
+                            try {
+                              await TaskServices().markTaskAsComplete(
+                                  taskList[i].docId.toString(),val);
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(e.toString())));
+                            }
+                          }),
+                      IconButton(
+                          onPressed: () async {
+                            try {
+                              await TaskServices()
+                                  .deleteTask(taskList[i].docId.toString());
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(e.toString())));
+                            }
+                          },
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          )),
+                    ],
+                  ),
                 );
               });
         },
