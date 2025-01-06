@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_b6_v2/models/task.dart';
 import 'package:flutter_b6_v2/services/task.dart';
 import 'package:flutter_b6_v2/views/create_task.dart';
+import 'package:flutter_b6_v2/views/update_task.dart';
 import 'package:provider/provider.dart';
 
 class GetAllTaskView extends StatelessWidget {
@@ -43,26 +44,37 @@ class GetAllTaskView extends StatelessWidget {
                           onChanged: (val) async {
                             try {
                               await TaskServices().markTaskAsComplete(
-                                  taskList[i].docId.toString(),val);
+                                  taskList[i].docId.toString(), val);
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text(e.toString())));
                             }
                           }),
                       IconButton(
-                          onPressed: () async {
-                            try {
-                              await TaskServices()
-                                  .deleteTask(taskList[i].docId.toString());
-                            } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(e.toString())));
-                            }
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => UpdateTaskView(
+                                          model: taskList[i],
+                                        )));
                           },
-                          icon: Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          )),
+                          icon: Icon(Icons.edit)),
+                      IconButton(
+                        onPressed: () async {
+                          try {
+                            await TaskServices()
+                                .deleteTask(taskList[i].docId.toString());
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(e.toString())));
+                          }
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      ),
                     ],
                   ),
                 );
