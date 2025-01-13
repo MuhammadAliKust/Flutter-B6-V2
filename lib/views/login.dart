@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_b6_v2/services/auth.dart';
+import 'package:flutter_b6_v2/views/get_all_task.dart';
 import 'package:flutter_b6_v2/views/register.dart';
 import 'package:flutter_b6_v2/views/reset_pwd.dart';
 
@@ -65,21 +66,7 @@ class _LoginViewState extends State<LoginView> {
                         setState(() {});
                         if(val!.emailVerified == true){
 
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text("Message"),
-                                  content: Text("User loggedIn Successfully"),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text("Okay"))
-                                  ],
-                                );
-                              });
+                       Navigator.push(context, MaterialPageRoute(builder: (context)=>GetAllTaskView()));
                         }else{
 
                           showDialog(
