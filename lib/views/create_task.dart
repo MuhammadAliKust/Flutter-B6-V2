@@ -55,7 +55,6 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                       setState(() {});
                       await TaskServices()
                           .createTask(TaskModel(
-
                               title: titleController.text,
                               description: descriptionController.text,
                               isCompleted: false,

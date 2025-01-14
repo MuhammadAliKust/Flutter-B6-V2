@@ -9,4 +9,14 @@ class UserServices {
         .doc(model.docId)
         .set(model.toJson(model.docId.toString()));
   }
+
+  ///Get User By ID
+  Stream<UserModel> getUserByID(String userID) {
+    return FirebaseFirestore.instance
+        .collection('userCollection')
+        .doc(userID)
+        .snapshots()
+        .map((userModel) => UserModel.fromJson(userModel.data()!));
+  }
+
 }

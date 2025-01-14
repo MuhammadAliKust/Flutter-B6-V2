@@ -19,7 +19,6 @@ class TaskServices {
     return FirebaseFirestore.instance
         .collection(task)
         .where('userID', isEqualTo: userID)
-        // .orderBy('createdAt', descending: true)
         .snapshots()
         .map((taskList) => taskList.docs
             .map((taskModel) => TaskModel.fromJson(taskModel.data()))

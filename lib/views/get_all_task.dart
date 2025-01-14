@@ -7,6 +7,7 @@ import 'package:flutter_b6_v2/models/task.dart';
 import 'package:flutter_b6_v2/services/task.dart';
 import 'package:flutter_b6_v2/views/create_task.dart';
 import 'package:flutter_b6_v2/views/update_task.dart';
+import 'package:flutter_b6_v2/views/user_profile.dart';
 import 'package:provider/provider.dart';
 
 class GetAllTaskView extends StatelessWidget {
@@ -17,6 +18,14 @@ class GetAllTaskView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Get All Task"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => UserProfileView()));
+              },
+              icon: Icon(Icons.person))
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

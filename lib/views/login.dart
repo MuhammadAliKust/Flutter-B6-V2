@@ -64,6 +64,8 @@ class _LoginViewState extends State<LoginView> {
                           .then((val) {
                         isLoading = false;
                         setState(() {});
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>GetAllTaskView()));
+return;
                         if(val!.emailVerified == true){
 
                        Navigator.push(context, MaterialPageRoute(builder: (context)=>GetAllTaskView()));
