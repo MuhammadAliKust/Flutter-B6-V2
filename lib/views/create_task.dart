@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_b6_v2/models/task.dart';
 import 'package:flutter_b6_v2/services/task.dart';
+import 'package:flutter_b6_v2/services/upload_file_services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CreateTaskView extends StatefulWidget {
   CreateTaskView({super.key});
@@ -17,6 +21,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
 
   bool isLoading = false;
 
+  File? image;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +31,19 @@ class _CreateTaskViewState extends State<CreateTaskView> {
       ),
       body: Column(
         children: [
+          if (image != null)
+            Image.file(
+              image!,
+              height: 200,
+            ),
+          ElevatedButton(
+              onPressed: () {
+                ImagePicker().pickImage(source: ImageSource.camera).then((val) {
+                  image = File(val!.path);
+                  setState(() {});
+                });
+              },
+              child: Text("Pick Image")),
           TextField(
             controller: titleController,
           ),
@@ -53,35 +72,40 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                     try {
                       isLoading = true;
                       setState(() {});
-                      await TaskServices()
-                          .createTask(TaskModel(
-                              title: titleController.text,
-                              description: descriptionController.text,
-                              isCompleted: false,
-                              userID: FirebaseAuth.instance.currentUser!.uid,
-                              image: "",
-                              createdAt: DateTime.now().millisecondsSinceEpoch))
-                          .then((val) {
-                        isLoading = false;
-                        setState(() {});
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text("Message"),
-                                content:
-                                    Text("Task has been created successfully"),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        titleController.clear();
-                                        descriptionController.clear();
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text("Okay"))
-                                ],
-                              );
-                            });
+                      await UploadFileServices()
+                          .getUrl(image)
+                          .then((downloadUrl) async {
+                        await TaskServices()
+                            .createTask(TaskModel(
+                                title: titleController.text,
+                                description: descriptionController.text,
+                                isCompleted: false,
+                                userID: FirebaseAuth.instance.currentUser!.uid,
+                                image: downloadUrl,
+                                createdAt:
+                                    DateTime.now().millisecondsSinceEpoch))
+                            .then((val) {
+                          isLoading = false;
+                          setState(() {});
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text("Message"),
+                                  content: Text(
+                                      "Task has been created successfully"),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          titleController.clear();
+                                          descriptionController.clear();
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("Okay"))
+                                  ],
+                                );
+                              });
+                        });
                       });
                     } catch (e) {
                       isLoading = false;

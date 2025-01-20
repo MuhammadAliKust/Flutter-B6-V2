@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,18 @@ class GetAllTaskView extends StatelessWidget {
               itemCount: taskList.length,
               itemBuilder: (context, i) {
                 return ListTile(
-                  leading: Icon(Icons.task),
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: CachedNetworkImage(
+                      imageUrl: taskList[i].image.toString(),
+                      fit: BoxFit.cover,
+                      height: 50,
+                      width: 50,
+                      placeholder: (context, url) =>
+                          CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ),
                   title: Text(taskList[i].title.toString()),
                   subtitle: Text(taskList[i].description.toString()),
                   trailing: Row(
